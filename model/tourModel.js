@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const slugify = require('slugify');
 
 //modelling Tours schema
 const tourSchema = new mongoose.Schema(
@@ -62,6 +64,21 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+//Document middleware: runs before .save() and .create()
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+tourSchema.pre('save', (next) => {
+  console.log('will save documnet');
+  next();
+});
+
+tourSchema.post('save', (doc, next) => {
+  console.log(doc);
+  next();
 });
 
 // eslint-disable-next-line new-cap
