@@ -1,4 +1,4 @@
-//Importing modules
+// Importing modules
 const express = require('express');
 
 const app = express();
@@ -8,11 +8,11 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./route/tourRoutes');
 const userRouter = require('./route/userRoutes');
 
-//Third party middleware
+// Third party middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-//Temprory Middlwware
+// Temprory Middlwware
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
@@ -20,13 +20,13 @@ app.use(express.static(`${__dirname}/public`));
 // app.use((req, res, next) => {
 //   next();
 // });
-//Own Middlware
+// Own Middlware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
 
-//Router
+// Router
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
