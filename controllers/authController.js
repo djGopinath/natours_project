@@ -41,11 +41,27 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email }).select('+password');
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Invalid Email or Password', 401));
- }
+  }
   // if everthing Ok send token to client
   const token = signToken(user._id);
   res.status(200).json({
     status: 'success',
     token,
   });
+});
+
+exports.protect = catchAsync((req, res, next) => {
+  //  Getting token and check of it's there
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startWith('Bearer ')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(new AppError('Your are not logged in', 401));
+  }
+  next();
 });
