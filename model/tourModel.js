@@ -115,8 +115,6 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (docs, next) {
   this.find({ secretTour: { $ne: true } });
-  console.log('queary took');
-  console.log('docs', docs);
   next();
 });
 

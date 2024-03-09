@@ -16,6 +16,11 @@ const handleValidationErrorDB = (err) => {
   const message = `Invalid Input Data. ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
+const handleJsonWebTokenError = () =>
+  new AppError('Invalid Token, Please login again', 401);
+
+const handleTokenExpiredError = () =>
+  new AppError('Your Token Expired, Please login again', 401);
 
 const sendDevErr = (err, res) => {
   res.status(err.statusCode).json({
@@ -47,10 +52,13 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendDevErr(err, res);
   } else if (process.env.NODE_ENV === 'production') {
+    // eslint-disable-next-line node/no-unsupported-features/es-syntax
     let error = { ...err };
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldError(error);
     if (error.name === 'ValidatorError') error = handleValidationErrorDB(error);
+    if (error.name === 'JsonWebTokenError') error = handleJsonWebTokenError();
+    if (error.name === 'TokenExpiredError') error = handleTokenExpiredError();
     sendProdErr(error, res);
   }
 };
