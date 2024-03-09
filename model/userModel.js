@@ -17,6 +17,11 @@ const userSchema = new mangoose.Schema({
     validate: [validator.isEmail, 'Please enter a valid email'],
   },
   photo: String,
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'guide', 'lead-guide'],
+    default: 'user',
+  },
   password: {
     type: String,
     required: [true, 'please provide a password'],
